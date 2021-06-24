@@ -9,11 +9,6 @@
 *Consider monthly returns on JP Morgan and S&P 500 index
 use data_char_line.dta, clear
 des
-
-tsline plot_vix plot_gvix, lpattern("-" "l")  ///
-	ytitle(Votility index in percent) ///
-	xtitle(Date) ///
-	tlabel(04jan1996 04jan2002 04jan2008 04jan2013 01jan2019) 
 	
 	
 *time series plot
@@ -24,9 +19,10 @@ tsline jpmrtrn sprtrn, ytitle(Monthly returns in %) ///
 tsline jpmrtrn sprtrn rf, ytitle(Monthly returns in %) ///
 						legend(order(1 "JP & Morgan" 2 "S&P 500 Index" 3 "One-month TBill"))
 
+tsline rf
 
 *summary statistics
-tabstat jpmrtrn sprtrn rf, stat(mean sd p10 p25 p50 p75 p90) col(stat) 
+tabstat jpmrtrn sprtrn rf, stat(mean sd p10 p25 p50 p75 p90 skew kurt) col(stat) 
 
 *plot the JP & Morgan monthly return on S&P 500 monthly return
 scatter jpmrtrn sprtrn
@@ -58,7 +54,7 @@ twoway (scatter y x) (lfit jpmrtrn sprtrn), ///
 		ytitle(Excess return (%) on the JP Morgan) ///
 		xtitle(Excess return (%) on the S&P 500 Index) ///
 		legend(order(1 "Excess return (%) on the JP Morgan" 2 "Characteristic Line")) ///
-		note("Data is obtained from CRSP, 2001-2020") ///
+		note("Data sources: CRSP, 2001-2020") ///
 		scheme(s1color)
 
 * OLS regression, the coefficient on x is the beta
@@ -80,12 +76,14 @@ _coef_table
 
 *step 1: collect the monthly return of those companies in 2018
 use data_sml, clear
-tabstat ret, stat(mean sd p10 p25 p50 p75 p90) col(stat) by(ticker) 
+tabstat ret, stat(mean sd p25 p50 p75 skew kurt) col(stat) by(ticker) 
 
 *compute the average of 12 months return for each stock
 collapse ret, by(ticker)
 
-*add a new column of beta coefficients
+
+
+*step 2: add a new column of beta coefficients
 gen beta = 0.54 if ticker == "M"
 replace beta = 0.81 if ticker == "FB"
 replace beta = 0.85 if ticker == "F"
@@ -95,7 +93,8 @@ replace beta = 1.06 if ticker == "HD"
 replace beta = 1.15 if ticker == "AAPL"
 replace beta = 1.46 if ticker == "PRU"
 replace beta = 1.70 if ticker == "AMZN"
-
+replace beta = 1.70 if ticker == "AMZN"
+replace beta = 1 if ticker == "Market"
 
 *generate company name for review
 gen firm = "Macy's" if ticker == "M"
@@ -108,20 +107,18 @@ replace firm = "Apple" if ticker == "AAPL"
 replace firm = "Prudential" if ticker == "PRU"
 replace firm = "Amazon" if ticker == "AMZN"
 
+
 *plot the SML
 scatter ret beta, ytitle(Expected returns) mlabel(firm) 
 
 
-
-twoway (scatter ret beta) (lfit jret beta), ///
-		ytitle( Excess return (%) on the JP Morgan) ///
-		legend(order(1 "Excess return (%) on the S&P 500 Index" 2 "Characteristic Line")) ///
-	
-
-
 twoway (scatter ret beta, mlabel(firm)) (lfit ret beta), ///
 		ytitle(Expected returns) ///
-		legend(order(1 "Invidiual stock returns" 2 "Security Market Line (SML")) ///
-		note("Data is obtained from CRSP, 2018") ///
+		xtitle(Systematic risk (beta)) ///
+		legend(order(1 "Invidiual stock returns" 2 "Security Market Line (SML)")) ///
+		note("Data sources: Return from CRSP & Beta from YahooFinance, 2018") ///
 		scheme(s1color)
 
+
+qui: reg ret beta
+_coef_table
