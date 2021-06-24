@@ -55,6 +55,7 @@ twoway (scatter y x) (lfit jpmrtrn sprtrn), ///
 		xtitle(Excess return (%) on the S&P 500 Index) ///
 		legend(order(1 "Excess return (%) on the JP Morgan" 2 "Characteristic Line")) ///
 		note("Data sources: CRSP, 2001-2020") ///
+		title(Characteristic Line for JP & Morgan) ///
 		scheme(s1color)
 
 * OLS regression, the coefficient on x is the beta
@@ -117,6 +118,7 @@ twoway (scatter ret beta, mlabel(firm)) (lfit ret beta), ///
 		xtitle(Systematic risk (beta)) ///
 		legend(order(1 "Invidiual stock returns" 2 "Security Market Line (SML)")) ///
 		note("Data sources: Return from CRSP & Beta from YahooFinance, 2018") ///
+		title(Security Market Line in the end of 2018) ///
 		scheme(s1color)
 
 
