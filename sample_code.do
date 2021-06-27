@@ -53,9 +53,9 @@ label var x "Excess return on the S&P 500 Index "
 twoway (scatter y x) (lfit jpmrtrn sprtrn), ///
 		ytitle(Excess return (%) on the JP Morgan) ///
 		xtitle(Excess return (%) on the S&P 500 Index) ///
-		legend(order(1 "Excess return (%) on the JP Morgan" 2 "Characteristic Line")) ///
+		legend(order(1 "Excess return (%) on the JPM" 2 "Characteristic Line")) ///
 		note("Data sources: CRSP, 2001-2020") ///
-		title(Characteristic Line for JP & Morgan) ///
+		title(Characteristic Line for JPMorgan Chase) ///
 		scheme(s1color)
 
 * OLS regression, the coefficient on x is the beta
