@@ -13,13 +13,16 @@ des
 	
 *time series plot
 tsset date
+tsline rf, ytitle(One-month TBill returns in %)
+								
+						
 tsline jpmrtrn sprtrn, ytitle(Monthly returns in %) ///
 						legend(order(1 "JP & Morgan" 2 "S&P 500 Index" ))
 
 tsline jpmrtrn sprtrn rf, ytitle(Monthly returns in %) ///
 						legend(order(1 "JP & Morgan" 2 "S&P 500 Index" 3 "One-month TBill"))
 
-tsline rf
+
 
 *summary statistics
 tabstat jpmrtrn sprtrn rf, stat(mean sd p10 p25 p50 p75 p90 skew kurt) col(stat) 
@@ -27,7 +30,7 @@ tabstat jpmrtrn sprtrn rf, stat(mean sd p10 p25 p50 p75 p90 skew kurt) col(stat)
 *plot the JP & Morgan monthly return on S&P 500 monthly return
 scatter jpmrtrn sprtrn
 
-
+*make the plot fancier 
 twoway (scatter jpmrtrn sprtrn) (lfit jpmrtrn sprtrn), ///
 		ytitle(Return (%) on the JP Morgan) ///
 		xtitle(Return (%) on the S&P 500 Index) ///
@@ -61,7 +64,6 @@ twoway (scatter y x) (lfit jpmrtrn sprtrn), ///
 * OLS regression, the coefficient on x is the beta
 qui: reg y x 
 _coef_table
-
 
 
 		*************************************************
@@ -112,7 +114,7 @@ replace firm = "Amazon" if ticker == "AMZN"
 *plot the SML
 scatter ret beta, ytitle(Expected returns) mlabel(firm) 
 
-
+*make the plot fancier 
 twoway (scatter ret beta, mlabel(firm)) (lfit ret beta), ///
 		ytitle(Expected returns) ///
 		xtitle(Systematic risk (beta)) ///
@@ -124,3 +126,6 @@ twoway (scatter ret beta, mlabel(firm)) (lfit ret beta), ///
 
 qui: reg ret beta
 _coef_table
+
+*The risk loadings on beta is insignificant (not different from zero). 
+*A major issue of CAPM in practice. 
